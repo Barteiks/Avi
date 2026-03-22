@@ -1,0 +1,70 @@
+﻿using LLama.Native;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
+
+namespace Avi.Services
+{
+    public static class AppLogger
+    {
+        private static string _logFilePath = null!;
+        public static ILogger Logger { get; set; }
+
+        public static void Init(IPlatformPathService pathService)
+        {
+            // Creating logs directory and log file
+            var logsFolder = pathService.GetLogsDirectory();
+            Directory.CreateDirectory(logsFolder);
+
+            _logFilePath = Path.Combine(logsFolder, "app.log");
+            if (File.Exists(_logFilePath)) File.Delete(_logFilePath);
+        }
+        
+        private static void WriteToFile(string level, string msg)
+        {
+            // Saving logs to file
+            if (_logFilePath == null) return;
+            var logLine = $"{DateTime.Now:HH:mm:ss} [{level}] {msg}";
+            try
+            {
+                File.AppendAllText(_logFilePath, logLine + Environment.NewLine);
+            }
+            catch (Exception e) {
+                Logger?.LogWarning("Failed to save log: " + e);
+            }
+            //Debug.WriteLine(logLine);
+        }
+        // Logging methods
+        public static void Info(string msg)
+        {
+            Logger?.LogInformation(msg);
+            WriteToFile("INFO", msg);
+        }
+        public static void Warning(string msg)
+        {
+            Logger?.LogWarning(msg);
+            WriteToFile("Warning", msg);
+        }
+        public static void Error(string msg)
+        {
+            Logger?.LogError(msg);
+            WriteToFile("ERROR", msg);
+        }
+
+        public static void LogNative(LLamaLogLevel level, string msg)
+        {
+            string formatted = $"[LlamaNative] {msg}";
+            switch (level)
+            {
+                case LLamaLogLevel.Debug: goto default;
+                case LLamaLogLevel.Warning: AppLogger.Warning(formatted); break;
+                case LLamaLogLevel.Error: AppLogger.Error(formatted); break;
+                case LLamaLogLevel.Continue: goto default;
+                case LLamaLogLevel.None: goto default;
+                default: AppLogger.Info(formatted); break;
+            }
+        }
+    }
+}
