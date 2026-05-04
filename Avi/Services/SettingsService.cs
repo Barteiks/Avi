@@ -64,7 +64,7 @@ namespace Avi.Services
             get
             {
                 var folder = _platformPathService.GetModelDirectory();
-                var fileName = Preferences.Get(Keys.WhisperModelPath, "ggml-tiny-q5_1.bin");
+                var fileName = Preferences.Get(Keys.WhisperModelPath, "ggml-medium-q5_0.bin");
                 return Path.Combine(folder, fileName);
             }
             set
@@ -79,7 +79,7 @@ namespace Avi.Services
             get
             {
                 var folder = _platformPathService.GetModelDirectory();
-                var fileName = Preferences.Get(Keys.LlamaModelPath, "xd.gguf");
+                var fileName = Preferences.Get(Keys.LlamaModelPath, "Meta-Llama-3.1-8B-Instruct-Q5_K_M.gguf");
                 return Path.Combine(folder, fileName);
             }
             set
@@ -95,13 +95,13 @@ namespace Avi.Services
 
         public int LlamaGpuLayers
         {
-            get => Preferences.Get(Keys.LlamaGpuLayers, 0);
+            get => Preferences.Get(Keys.LlamaGpuLayers, 200);
             set => Preferences.Set(Keys.LlamaGpuLayers, value);
         }
 
         public int LlamaContextSize
         {
-            get => Preferences.Get(Keys.LlamaContextSize, 512); // default 1 GB
+            get => Preferences.Get(Keys.LlamaContextSize, 4096); // default 4 GB
             set => Preferences.Set(Keys.LlamaContextSize, value);
         }
 
