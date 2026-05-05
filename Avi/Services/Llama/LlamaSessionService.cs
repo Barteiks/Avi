@@ -40,9 +40,11 @@ namespace Avi.Services.AI
         {
             //executor
             await _executorService.LoadModel();
+            await _historyManager.InitializeAsync();
             //speech
 
         }
+
 
         public bool IsInterested(string audioTranscription)
             => !_isResponding || audioTranscription.Contains("stop", StringComparison.CurrentCultureIgnoreCase);

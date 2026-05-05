@@ -12,15 +12,18 @@ namespace Avi.Services.AI
     public class ChatHistoryManager
     {
         private readonly string ChatHistoryFile = Path.Combine(AppDataDirectories.History, "chatHistory.json");
-        private readonly string _systemPrompt;
+        private string _systemPrompt;
 
         public ChatHistory History { get; }
         public string SystemPrompt => _systemPrompt;
 
         public ChatHistoryManager()
-        {
-            _systemPrompt = ReadFileTEMP("Assets/promptMain.txt").GetAwaiter().GetResult();
+        { 
             History = new ChatHistory();
+        }
+        public async Task InitializeAsync()
+        {
+            _systemPrompt = await ReadFileTEMP("Assets/promptMain.txt");
         }
         private async Task<string> ReadFileTEMP(String path)
         {

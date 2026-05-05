@@ -19,8 +19,6 @@ public class TaskManager : IDisposable
 
     public TaskManager(ISettingsService settings, IPlatformPathService platformPathService, ISpeechManager speechManager, LlamaManager llamaManager)
     {
-        
-
         _settings = settings;
 
         _parser.OnParsedItem += HandleParsedItem;

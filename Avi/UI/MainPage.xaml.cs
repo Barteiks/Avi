@@ -21,9 +21,9 @@ namespace Avi
             //ONLY FOR DEBUG
             //private int _emotionIndex = 0;
             //private readonly Emotion[] _emotions = (Emotion[])Enum.GetValues(typeof(Emotion));
+            Debug.WriteLine("SUS");
             InitializeComponent();
             _taskManager = taskManager;
-            
             _faceDrawable = FaceView;
             
             _faceDrawable.MainText = "Sleep mode";
