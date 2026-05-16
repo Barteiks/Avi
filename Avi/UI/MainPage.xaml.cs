@@ -16,7 +16,7 @@ namespace Avi
         private readonly FaceFadeAnimator _fadeAnimator;
         private readonly ISettingsService _settings;
 
-        public MainPage(TaskManager taskManager)
+        public MainPage(TaskManager taskManager, ISettingsService settings)
         {
             //ONLY FOR DEBUG
             //private int _emotionIndex = 0;
@@ -25,7 +25,7 @@ namespace Avi
             InitializeComponent();
             _taskManager = taskManager;
             _faceDrawable = FaceView;
-            
+            _settings = settings;
             _faceDrawable.MainText = "Sleep mode";
             _faceDrawable.SubText = "";
             _fadeAnimator = new FaceFadeAnimator(FaceView);
@@ -33,6 +33,23 @@ namespace Avi
             SizeChanged += MainPage_SizeChanged;
             LoadLambda();
             sec();
+            SettingsContainer.Children.Add(new SettingsView(_settings));
+        }
+        protected override bool OnBackButtonPressed()
+        {
+
+            // np. zamknij settings
+            if (isOpen)
+            {
+                ToggleSettings();
+                return true; // blokuje domyślne wyjście
+            }
+
+            return base.OnBackButtonPressed();
+        }
+        private void OpenSettings(object sender, EventArgs e)
+        {
+            ToggleSettings();
         }
         private async Task sec()
         {
@@ -46,6 +63,41 @@ namespace Avi
                 Debug.WriteLine("Nie przyznano uprawnień do storage");
             }
 #endif
+        }
+        bool isOpen;
+        public async void ToggleSettings()
+        {
+            if (!isOpen)
+            {
+                SettingsContainer.IsVisible = true;
+                Overlay.IsVisible = true;
+
+                SettingsContainer.TranslationY = 1000;
+                SettingsContainer.Opacity = 0;
+
+                _ = Overlay.FadeTo(0.5, 200);
+
+                await Task.WhenAll(
+                    SettingsContainer.FadeTo(1, 250),
+                    SettingsContainer.TranslateTo(0, 0, 350, Easing.CubicOut)
+                );
+
+                isOpen = true;
+            }
+            else
+            {
+                _ = Overlay.FadeTo(0, 200);
+
+                await Task.WhenAll(
+                    SettingsContainer.FadeTo(0, 200),
+                    SettingsContainer.TranslateTo(0, 1000, 300, Easing.CubicIn)
+                );
+
+                SettingsContainer.IsVisible = false;
+                Overlay.IsVisible = false;
+
+                isOpen = false;
+            }
         }
 
         private void LoadLambda()
@@ -111,6 +163,8 @@ namespace Avi
             //var currentEmotion = _emotions[_emotionIndex];
             //_faceAnimator.ApplyEmotion(currentEmotion);
             //_emotionIndex = (_emotionIndex + 1) % _emotions.Length;
+            //ToggleSettings();
+            //return;
             _faceDrawable!.FadeOutBreathing(0.3f);
             _faceDrawable.MainText = "Loading";
             label.Text += "\n one sec loading bruh...";

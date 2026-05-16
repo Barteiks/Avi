@@ -97,8 +97,13 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.50" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.5" />
+		<PackageReference Include="CommunityToolkit.Maui.Core" Version="14.1.1" />
+		<PackageReference Include="LLamaSharp" Version="0.27.0" />
+		<PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.27.0" />
+		<PackageReference Include="LLamaSharp.Backend.Cpu.Android" Version="0.27.0" />
+		<PackageReference Include="LLamaSharp.Backend.Cuda12" Version="0.27.0" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.60" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.8" />
 		<PackageReference Include="NAudio" Version="2.3.0" />
 		<PackageReference Include="NAudio.Core" Version="2.3.0" />
 		<PackageReference Include="SkiaSharp" Version="3.119.2" />
@@ -109,29 +114,29 @@
 		<PackageReference Include="Whisper.net.Runtime" Version="1.9.0" />
 		
 	</ItemGroup>
-	<!-- ANDROID -->
+	<!-- ANDROID --><!--
 	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
 		<PackageReference Include="LLamaSharp" Version="0.24.0" />
 		<PackageReference Include="LLamaSharp.Backend.Cpu.Android" Version="0.24.0" />
 	</ItemGroup>
 
-	<!-- WINDOWS -->
+	--><!-- WINDOWS --><!--
 	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-windows10.0.19041.0'">
 		<PackageReference Include="LLamaSharp" Version="0.26.0" />
 		<PackageReference Include="LLamaSharp.Backend.Cuda12" Version="0.26.0" />
 	</ItemGroup>
 
-	<!-- IOS -->
+	--><!-- IOS --><!--
 	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-ios'">
 		<PackageReference Include="LLamaSharp" Version="0.26.0" />
 		<PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.26.0" />
 	</ItemGroup>
 
-	<!-- MACCATALYST -->
+	--><!-- MACCATALYST --><!--
 	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-maccatalyst'">
 		<PackageReference Include="LLamaSharp" Version="0.26.0" />
 		<PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.26.0" />
-	</ItemGroup>
+	</ItemGroup>-->
 	
 	<ItemGroup>
 	  <Compile Update="UI\MainWindow.xaml.cs">
@@ -143,6 +148,12 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <MauiXaml Update="UI\MainWindow.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\Controls\SettingsItem.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="UI\SettingsView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Avi.UI.Controls.SettingsItem">
+
+    <ContentView.ControlTemplate>
+        <ControlTemplate>
+            <Border StrokeShape="RoundRectangle 8"
+                    Stroke="#404040"
+                    StrokeThickness="1"
+                    BackgroundColor="#2B2B2B"
+                    Padding="16,12">
+
+                <Grid ColumnDefinitions="30,*,Auto, Auto" ColumnSpacing="10">
+
+                    <Label Grid.Column="0"
+                           Text="{TemplateBinding Icon}"
+                           FontFamily="SegoeFluentIcons"
+                           FontSize="20"
+                           TextColor="White"
+                           VerticalOptions="Center"/>
+
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                        <Label Text="{TemplateBinding Title}"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="White"/>
+                        <Label Text="{TemplateBinding Description}"
+                               FontSize="12"
+                               TextColor="#B0B0B0"/>
+                    </VerticalStackLayout>
+
+                    <ContentPresenter Grid.Column="2" 
+                                      VerticalOptions="Center"/>
+                </Grid>
+            </Border>
+        </ControlTemplate>
+    </ContentView.ControlTemplate>
+
+</ContentView>

@@ -15,10 +15,12 @@ namespace Avi.Services
         int LlamaContextSize { get; set; }
         int LlamaThreads { get; set; }
         float LlamaTemperature { get; set; }
+        bool LlamaCUDA { get; set; }
 
         // Whisper settings
         int WhisperContextSize { get; set; }
         int WhisperThreads { get; set; }
+        bool WhisperCUDA { get; set; }
 
         // App settings
         string AppLanguage { get; set; }
@@ -41,6 +43,7 @@ namespace Avi.Services
             public const string WhisperModelPath = "whisper_file";
             public const string WhisperThreads = "whisper_threads";
             public const string WhisperContextSize = "whisper_context_size";
+            public const string WhisperCUDA = "whisper_cuda";
 
             // Llama settings
             public const string LlamaModelPath = "llama_file";
@@ -48,6 +51,7 @@ namespace Avi.Services
             public const string LlamaGpuLayers = "llama_gpu_layers";
             public const string LlamaContextSize = "llama_context_size";
             public const string LlamaTemperature = "llama_temperature";
+            public const string LlamaCUDA = "llama_cuda";
         }
 
         public SettingsService(IPlatformPathService platformPathService)
@@ -64,7 +68,7 @@ namespace Avi.Services
             get
             {
                 var folder = _platformPathService.GetModelDirectory();
-                var fileName = Preferences.Get(Keys.WhisperModelPath, "ggml-medium-q5_0.bin");
+                var fileName = Preferences.Get(Keys.WhisperModelPath, "ggml-tiny-q5_1.bin"); //ggml-medium-q5_0.bin
                 return Path.Combine(folder, fileName);
             }
             set
@@ -79,7 +83,7 @@ namespace Avi.Services
             get
             {
                 var folder = _platformPathService.GetModelDirectory();
-                var fileName = Preferences.Get(Keys.LlamaModelPath, "Meta-Llama-3.1-8B-Instruct-Q5_K_M.gguf");
+                var fileName = Preferences.Get(Keys.LlamaModelPath, "xd.gguf"); //Meta-Llama-3.1-8B-Instruct-Q5_K_M
                 return Path.Combine(folder, fileName);
             }
             set
@@ -101,13 +105,13 @@ namespace Avi.Services
 
         public int LlamaContextSize
         {
-            get => Preferences.Get(Keys.LlamaContextSize, 4096); // default 4 GB
+            get => Preferences.Get(Keys.LlamaContextSize, 1024); // default 4 GB
             set => Preferences.Set(Keys.LlamaContextSize, value);
         }
 
         public int LlamaThreads
         {
-            get => Preferences.Get(Keys.LlamaThreads, Environment.ProcessorCount - 1);
+            get => Preferences.Get(Keys.LlamaThreads, Environment.ProcessorCount - 1);//);
             set => Preferences.Set(Keys.LlamaThreads, value);
         }
 
@@ -115,6 +119,12 @@ namespace Avi.Services
         {
             get => Preferences.Get(Keys.LlamaTemperature, 0.7f);
             set => Preferences.Set(Keys.LlamaTemperature, value);
+        }
+
+        public bool LlamaCUDA
+        {
+            get => Preferences.Get(Keys.LlamaCUDA, true);
+            set => Preferences.Set(Keys.LlamaCUDA, value);
         }
 
         // -------------------------
@@ -131,6 +141,12 @@ namespace Avi.Services
         {
             get => Preferences.Get(Keys.WhisperThreads, Environment.ProcessorCount);
             set => Preferences.Set(Keys.WhisperThreads, value);
+        }
+
+        public bool WhisperCUDA
+        {
+            get => Preferences.Get(Keys.WhisperCUDA, true);
+            set => Preferences.Set(Keys.WhisperCUDA, value);
         }
 
         // -------------------------

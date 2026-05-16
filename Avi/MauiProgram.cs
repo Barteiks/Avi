@@ -1,4 +1,5 @@
 ﻿using Avi.Services;
+using CommunityToolkit.Maui.Core;
 using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using System.Diagnostics;
@@ -17,11 +18,13 @@ namespace Avi
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("Segoe-Fluent-Icons.ttf", "SegoeFluentIcons");
                 });
 
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+            builder.UseMauiApp<App>().UseMauiCommunityToolkitCore();
             builder.Services.AddSingleton<ISettingsService, SettingsService>();
 #if ANDROID
             builder.Services.AddSingleton<IPlatformPathService, Platforms.Android.PlatformPathServiceAndroid>();

@@ -58,7 +58,7 @@ namespace Avi.Services.AI
                 GpuLayerCount = _settings.LlamaGpuLayers,
                 UseMemorymap = false,
                 ContextSize = (uint?)_settings.LlamaContextSize,
-                Threads = Environment.ProcessorCount - 1,
+                Threads = _settings.LlamaThreads,
                 BatchSize = 64,
             };
 

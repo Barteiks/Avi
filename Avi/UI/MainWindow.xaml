@@ -12,7 +12,19 @@
             ForegroundColor="#feffed"
             HeightRequest="48">
             <!-- Opcjonalna zawartość w TitleBar -->
-
+            <TitleBar.TrailingContent>
+                <ImageButton HeightRequest="36"
+                             Clicked="SettingsButton_Clicked"
+                     WidthRequest="36"
+                     BorderWidth="0"
+                     Background="Transparent">
+                    <ImageButton.Source>
+                        <FontImageSource Size="16"
+                                 Glyph="&#xE713;"
+                                 FontFamily="SegoeFluentIcons"/>
+                    </ImageButton.Source>
+                </ImageButton>
+            </TitleBar.TrailingContent>
         </TitleBar>
     </Window.TitleBar>
 </Window>

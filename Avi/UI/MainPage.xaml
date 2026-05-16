@@ -5,10 +5,15 @@
              x:Class="Avi.MainPage"
              BackgroundColor="#FF1E1E1E"
              Title="HelperAI">
+    <AbsoluteLayout>
 
-    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- MAIN UI -->
+        <Grid AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All">
+            <Grid RowDefinitions="Auto,*,Auto">
 
         <Grid Row="1"
+      x:Name="HomePage"
       HorizontalOptions="Fill"
       VerticalOptions="Fill">
             <Grid.Background>
@@ -20,8 +25,9 @@
 
             <Grid x:Name="face" WidthRequest="800" HeightRequest="450"
                   HorizontalOptions="Center" VerticalOptions="Center">
-                <local:Face x:Name="FaceView" HorizontalOptions="Fill" VerticalOptions="Fill" /> <!-- face -->
-                
+                <local:Face x:Name="FaceView" HorizontalOptions="Fill" VerticalOptions="Fill" />
+                <!-- face -->
+
             </Grid>
 
             <!-- Bottom: Output and right-side label -->
@@ -30,15 +36,17 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-
-                <Editor x:Name="OutputBox"
+                        <Editor x:Name="OutputBox"
                         Grid.Column="0"
                         HeightRequest="108"
                         TextColor="Blue"
                         BackgroundColor="White"
                         FontSize="20"/>
-
-                <Editor x:Name="label"
+                        <Button x:Name="SettingsButton"
+                        Clicked="OpenSettings"
+                                WidthRequest="5"
+                                HeightRequest="5"></Button>
+                        <Editor x:Name="label"
                         Grid.Column="1"
                         WidthRequest="147"
                         HeightRequest="220"
@@ -47,8 +55,23 @@
                         BackgroundColor="White"/>
             </Grid>
         </Grid>
-        <!-- hidden button used only for KeyboardAccelerator (F1) to toggle debug visibility on desktop -->
+            </Grid>
+            <!-- hidden button used only for KeyboardAccelerator (F1) to toggle debug visibility on desktop -->
         <Button x:Name="F1Toggle" IsVisible="False" Clicked="OnF1ToggleClicked">
         </Button>
+        <BoxView
+        x:Name="Overlay"
+        BackgroundColor="#FF1E1E1E"
+        Opacity="0"
+        IsVisible="False"/>
+        <!-- PANEL USTAWIEŃ -->
+        <Grid x:Name="SettingsContainer"
+      BackgroundColor="#FF1E1E1E"
+      HorizontalOptions="Fill"
+      VerticalOptions="Fill"
+      IsVisible="False"
+      Opacity="0"
+      TranslationY="1000"></Grid>
     </Grid>
+    </AbsoluteLayout>
 </ContentPage>

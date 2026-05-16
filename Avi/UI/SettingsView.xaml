@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Avi.UI.SettingsView"
+             xmlns:controls="clr-namespace:Avi.UI.Controls"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             BackgroundColor="#202020">
+
+    <ScrollView BackgroundColor="#FF1E1E1E">
+        <VerticalStackLayout Spacing="8" 
+                             Padding="20, 40, 20, 200" 
+                             MaximumWidthRequest="1000" 
+                             HorizontalOptions="Fill"
+                             Margin="10">
+
+            <Label Text="Settings" FontSize="32" FontAttributes="Bold" TextColor="White" Margin="0,0,0,20"/>
+            <Label Text="General" FontSize="14" FontAttributes="Bold" TextColor="#E0E0E0" Margin="5,10,0,5"/>
+
+            <controls:SettingsItem Icon="&#xE790;" Title="Avi color" Description="Select color for Avi">
+                <Picker WidthRequest="150" TextColor="White" TitleColor="White" BackgroundColor="#323232" SelectedIndex="1">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Light</x:String>
+                            <x:String>Dark</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </controls:SettingsItem>
+
+            <controls:SettingsItem Icon="&#xF2B7;" Title="Avi language" Description="Select language for Avi">
+                <Picker WidthRequest="150" TextColor="White" TitleColor="White" BackgroundColor="#323232" SelectedIndex="1">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>English</x:String>
+                            <x:String>Polish</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </controls:SettingsItem>
+
+            <Label Text="Whisper settings" FontSize="14" FontAttributes="Bold" TextColor="#E0E0E0" Margin="5,10,0,5"/>
+
+            <controls:SettingsItem Icon="&#xE8B7;" Title="Whisper model" Description="Select model for whisper">
+                <Picker WidthRequest="150" TextColor="White" TitleColor="White" BackgroundColor="#323232" SelectedIndex="1">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>English</x:String>
+                            <x:String>Polish</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </controls:SettingsItem>
+
+            <controls:SettingsItem Icon="&#xEEA0;" Title="Whisper context size" Description="Select context size for whisper">
+                <Grid ColumnDefinitions="45, *" VerticalOptions="Center" WidthRequest="{OnPlatform WinUI=250, Android=180}">
+                    <Label Grid.Column="0" 
+                           Text="{Binding WhisperContextSizeDisplay}" 
+                           TextColor="White" 
+                           FontSize="{OnPlatform WinUI=14, Android=12}"
+                           VerticalOptions="Center" 
+                           HorizontalTextAlignment="Center" />
+                    <Slider Grid.Column="1" Minimum="0" Maximum="4" VerticalOptions="Center" Value="{Binding WhisperContextIndex}" />
+                </Grid>
+            </controls:SettingsItem>
+
+            <controls:SettingsItem Icon="&#xEEA1;" Title="Whisper threads amount" Description="Select threads amount for whisper">
+                <Grid ColumnDefinitions="45, *" VerticalOptions="Center" WidthRequest="{OnPlatform WinUI=250, Android=180}">
+                    <Label Grid.Column="0" 
+                           Text="{Binding WhisperThreads}" 
+                           TextColor="White" 
+                           FontSize="{OnPlatform WinUI=14, Android=12}"
+                           VerticalOptions="Center" 
+                           HorizontalTextAlignment="Center" />
+                    <Slider Grid.Column="1" Minimum="1" Maximum="{Binding MaxThreads}" VerticalOptions="Center" Value="{Binding WhisperThreads}" />
+                </Grid>
+            </controls:SettingsItem>
+
+            <controls:SettingsItem Icon="&#xE7F8;" Title="Use cuda" Description="Select if cuda should be used">
+                <Switch Grid.Column="3" IsToggled="{Binding WhisperCUDA}" VerticalOptions="Center" HorizontalOptions="End" Margin="0,0,40,0" OnColor="#0078D4"/>
+            </controls:SettingsItem>
+
+            <Label Text="Llama settings" FontSize="14" FontAttributes="Bold" TextColor="#E0E0E0" Margin="5,10,0,5"/>
+
+            <controls:SettingsItem Icon="&#xE8B7;" Title="Llama model" Description="Select model for llama">
+                <Picker WidthRequest="150" TextColor="White" TitleColor="White" BackgroundColor="#323232" SelectedIndex="1">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>English</x:String>
+                            <x:String>Polish</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </controls:SettingsItem>
+
+            <controls:SettingsItem Icon="&#xEEA0;" Title="Llama context size" Description="Select context size for llama">
+                <Grid ColumnDefinitions="45, *" VerticalOptions="Center" WidthRequest="{OnPlatform WinUI=250, Android=180}">
+                    <Label Grid.Column="0" 
+                           Text="{Binding LlamaContextSizeDisplay}" 
+                           TextColor="White" 
+                           FontSize="{OnPlatform WinUI=14, Android=12}"
+                           VerticalOptions="Center" 
+                           HorizontalTextAlignment="Center" />
+                    <Slider Grid.Column="1" Minimum="0" Maximum="4" VerticalOptions="Center" Value="{Binding LlamaContextIndex}" />
+                </Grid>
+            </controls:SettingsItem>
+
+            <controls:SettingsItem Icon="&#xEEA1;" Title="Llama threads amount" Description="Select threads amount for llama">
+                <Grid ColumnDefinitions="45, *" VerticalOptions="Center" WidthRequest="{OnPlatform WinUI=250, Android=180}">
+                    <Label Grid.Column="0" 
+                           Text="{Binding LlamaThreads}" 
+                           TextColor="White" 
+                           FontSize="{OnPlatform WinUI=14, Android=12}"
+                           VerticalOptions="Center" 
+                           HorizontalTextAlignment="Center" />
+                    <Slider Grid.Column="1" Minimum="1" Maximum="{Binding MaxThreads}" VerticalOptions="Center" Value="{Binding LlamaThreads}" />
+                </Grid>
+            </controls:SettingsItem>
+
+            <controls:SettingsItem Icon="&#xE7F8;" Title="Use cuda" Description="Select if cuda should be used">
+                <Switch Grid.Column="3" IsToggled="{Binding LlamaCUDA}" VerticalOptions="Center" HorizontalOptions="End" Margin="0,0,40,0" OnColor="#0078D4"/>
+            </controls:SettingsItem>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>
