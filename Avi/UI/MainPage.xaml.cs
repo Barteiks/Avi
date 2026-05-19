@@ -38,7 +38,7 @@ namespace Avi
         protected override bool OnBackButtonPressed()
         {
 
-            // np. zamknij settings
+            // np. zamknij _settings
             if (isOpen)
             {
                 ToggleSettings();
@@ -132,8 +132,11 @@ namespace Avi
 
             _faceDrawable!.MainTextClicked += () =>
             {
-                Load();
-                Debug.WriteLine("Started loading");
+                if (!_taskManager.isLoaded)
+                {
+                    Load();
+                    Debug.WriteLine("Started loading");
+                }
             };
         }
 
@@ -163,8 +166,7 @@ namespace Avi
             //var currentEmotion = _emotions[_emotionIndex];
             //_faceAnimator.ApplyEmotion(currentEmotion);
             //_emotionIndex = (_emotionIndex + 1) % _emotions.Length;
-            //ToggleSettings();
-            //return;
+            
             _faceDrawable!.FadeOutBreathing(0.3f);
             _faceDrawable.MainText = "Loading";
             label.Text += "\n one sec loading bruh...";

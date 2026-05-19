@@ -37,6 +37,7 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+		<Platforms>AnyCPU</Platforms>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
@@ -102,6 +103,7 @@
 		<PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.27.0" />
 		<PackageReference Include="LLamaSharp.Backend.Cpu.Android" Version="0.27.0" />
 		<PackageReference Include="LLamaSharp.Backend.Cuda12" Version="0.27.0" />
+		<PackageReference Include="LLamaSharp.Backend.Vulkan" Version="0.27.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.60" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.8" />
 		<PackageReference Include="NAudio" Version="2.3.0" />
@@ -112,31 +114,22 @@
 		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.119.2" />
 		<PackageReference Include="Whisper.net" Version="1.9.0" />
 		<PackageReference Include="Whisper.net.Runtime" Version="1.9.0" />
+		<PackageReference Include="Whisper.net.Runtime.Cuda" Version="1.9.0" />
+		<PackageReference Include="Whisper.net.Runtime.Vulkan" Version="1.9.0" />
 		
 	</ItemGroup>
-	<!-- ANDROID --><!--
-	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android'">
-		<PackageReference Include="LLamaSharp" Version="0.24.0" />
-		<PackageReference Include="LLamaSharp.Backend.Cpu.Android" Version="0.24.0" />
+	<ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
+		
+		<Content Include="CudaLibs\Cuda12\*.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>runtimes\win-x64\native\cuda12\%(Filename)%(Extension)</Link>
+		</Content>
+		<Content Include="CudaLibs\Cuda13\*.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>%(Filename)%(Extension)</Link>
+		</Content>
+		
 	</ItemGroup>
-
-	--><!-- WINDOWS --><!--
-	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-windows10.0.19041.0'">
-		<PackageReference Include="LLamaSharp" Version="0.26.0" />
-		<PackageReference Include="LLamaSharp.Backend.Cuda12" Version="0.26.0" />
-	</ItemGroup>
-
-	--><!-- IOS --><!--
-	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-ios'">
-		<PackageReference Include="LLamaSharp" Version="0.26.0" />
-		<PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.26.0" />
-	</ItemGroup>
-
-	--><!-- MACCATALYST --><!--
-	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-maccatalyst'">
-		<PackageReference Include="LLamaSharp" Version="0.26.0" />
-		<PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.26.0" />
-	</ItemGroup>-->
 	
 	<ItemGroup>
 	  <Compile Update="UI\MainWindow.xaml.cs">

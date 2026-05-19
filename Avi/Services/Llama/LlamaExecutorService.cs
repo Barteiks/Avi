@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Avi.Services.AI
@@ -37,7 +38,10 @@ namespace Avi.Services.AI
         public async Task LoadModel()
         {
             
+
             
+
+
             var gbnf = await LoadGrammarAsync();
 
             SamplingPipeline = new DefaultSamplingPipeline
@@ -50,7 +54,8 @@ namespace Avi.Services.AI
             {
                 SamplingPipeline = SamplingPipeline,
                 MaxTokens = 500,
-                AntiPrompts = new List<string> { "]" }
+                AntiPrompts = new List<string> { "]" },
+                OverflowStrategy = ContextOverflowStrategy.TruncateAndReprefill
             };
 
             _parameters = new ModelParams(_settings.LlamaPath)

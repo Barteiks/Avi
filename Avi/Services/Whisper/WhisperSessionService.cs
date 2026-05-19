@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Whisper.net;
+using Whisper.net.LibraryLoader;
+using Whisper.net.Logger;
 
 namespace Avi.Services.Whisper
 {
@@ -18,30 +20,51 @@ namespace Avi.Services.Whisper
         private readonly WaveFormat _waveFormat = new(16000, 16, 1);
         private readonly string[] _knownFalsePositives = new[] { "[BLANK_AUDIO]", "[silence]" };
         private readonly SemaphoreSlim _processingLock = new(1, 1);
-        private readonly ISettingsService settings;
+        private readonly ISettingsService _settings;
 
         public WhisperTranscriptionService(ISettingsService settings)
         {
-            this.settings = settings;
+            _settings = settings;
         }
 
         public async Task CreateAsync()
         {
-            var whisperFactory = WhisperFactory.FromPath(settings.WhisperPath);
+            var runtimeOrder = new List<RuntimeLibrary>();
+            
+            if (_settings.WhisperCUDA)
+            {
+                runtimeOrder.Add(RuntimeLibrary.Cuda);
+            }
+            if (_settings.WhisperVulkan)
+            {
+                runtimeOrder.Add(RuntimeLibrary.Vulkan);
+            }
+            runtimeOrder.Add(RuntimeLibrary.Cpu);
+            RuntimeOptions.RuntimeLibraryOrder = runtimeOrder;
+            try
+            {
+                var whisperFactory = WhisperFactory.FromPath(_settings.WhisperPath);
 
             var build = whisperFactory.CreateBuilder()
-                .WithThreads(4)
+                .WithThreads(_settings.WhisperThreads)
                 .WithSingleSegment()
-                .WithLanguage(settings.AppLanguage)
-                .WithPrompt("User is speaking short real-time commands. Prefer clear words. If unclear, assume simple phrases.")
+                .WithLanguage("auto")
+                .WithPrompt("User is speaking real time sentences. Prefer clear words. If unclear, assume simple phrases.")
+                
                 .WithTemperature(0.0f);
 
             ((BeamSearchSamplingStrategyBuilder)build.WithBeamSearchSamplingStrategy())
-                .WithPatience(1.0f)   // mniej zgadywania
+                .WithPatience(1.0f)
                 .WithBeamSize(3);
-
-            _processor = build.Build();
-
+            
+            
+                _processor = build.Build();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error initializing Whisper: {ex.Message}");
+                throw;
+            }
             await Task.CompletedTask;
             Debug.WriteLine("Whisper initialized");
         }

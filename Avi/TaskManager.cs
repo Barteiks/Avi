@@ -1,4 +1,5 @@
-﻿using Avi.Managers;
+﻿using Avi.Functions;
+using Avi.Managers;
 using Avi.Services;
 using Avi.Services.Llama;
 using LLama.Native;
@@ -8,23 +9,26 @@ using System.Text.Json;
 public class TaskManager : IDisposable
 {
     private readonly ISettingsService _settings;
+    private readonly IPlatformPermissionManager _permissionManager;
     private LlamaManager? _ai;
     private ISpeechManager? _speech;
     private readonly AiResponseParser _parser = new();
-
+    private bool _isLoaded = false;
     public event Action<string>? OnMessage;
     public event Action<string>? OnEmotion;
     public event Action<string>? OnStatus;
     public event Action<string>? OnDebug;
-
-    public TaskManager(ISettingsService settings, IPlatformPathService platformPathService, ISpeechManager speechManager, LlamaManager llamaManager)
+    public event Action<string>? OnCmdCommand;
+    private FunctionsManager _functions;
+    public TaskManager(ISettingsService settings, IPlatformPathService platformPathService, ISpeechManager speechManager, LlamaManager llamaManager, IPlatformPermissionManager permissionManager)
     {
         _settings = settings;
-
+        _permissionManager = permissionManager;
         _parser.OnParsedItem += HandleParsedItem;
         _speech = speechManager;
         _ai = llamaManager;
-
+        _functions = new FunctionsManager(this);
+        _functions.loadFunctions();
         // subscribe to speech debug/recognized notifications and forward to TaskManager.OnDebug (UI)
         _speech.OnRecognizedDebug += text =>
         {
@@ -34,13 +38,38 @@ public class TaskManager : IDisposable
                 OnDebug?.Invoke(text ?? string.Empty);
             });
         };
+        _functions.OnCmdCommandOutput += async message =>
+        {
+            Debug.WriteLine($"[CmdFunction] Received command AMOGUS: {message}");
+            await llamaManager.SendMessage(message, LLama.Common.AuthorRole.User);
+        };
     }
 
 
     public async Task LoadAsync()
     {
+        _isLoaded = true;
+        try
+        {
+            var microphonePermission = await _permissionManager.RequestAsync<Permissions.Microphone>();
+            if (microphonePermission != PermissionStatus.Granted)
+            {
+                OnStatus?.Invoke("Microphone permission denied. Please grant permissions and restart the app.");
+                _isLoaded = false;
+                return;
+            }
+        }
+        catch (Exception ex) { 
+         AppLogger.Error($"Error requesting microphone permission: {ex.Message}");
+        }
 #if ANDROID
-        await Permissions.RequestAsync<Permissions.Microphone>();
+        await _permissionManager.RequestSpecialAsync(SpecialPermission.AllFilesAccess);
+        if (! await _permissionManager.HasSpecialAsync(SpecialPermission.AllFilesAccess))
+        {
+            OnStatus?.Invoke("No permissions!!!...");
+            _isLoaded = false;
+            return;
+        }
 #endif
         OnStatus?.Invoke("Loading models...");
 
@@ -95,6 +124,13 @@ public class TaskManager : IDisposable
                 Debug.WriteLine($"[TaskManager] HandleParsedItem error: {ex.Message}");
             }
         });
+        if (type == "cmd")
+        {
+            // Handle command if needed
+            Debug.WriteLine($"[TaskManager] Received command: {content}");
+            OnCmdCommand?.Invoke(content);
+
+        }
     }
 
     public void Dispose()
@@ -112,4 +148,5 @@ public class TaskManager : IDisposable
     {
         OnDebug?.Invoke(message ?? string.Empty);
     }
+    public bool isLoaded => _isLoaded;
 }

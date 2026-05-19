@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Whisper.net.Logger;
 
 namespace Avi.Services
 {
@@ -53,7 +54,7 @@ namespace Avi.Services
             WriteToFile("ERROR", msg);
         }
 
-        public static void LogNative(LLamaLogLevel level, string msg)
+        public static void LogNativeLlama(LLamaLogLevel level, string msg)
         {
             string formatted = $"[LlamaNative] {msg}";
             switch (level)
@@ -63,6 +64,19 @@ namespace Avi.Services
                 case LLamaLogLevel.Error: AppLogger.Error(formatted); break;
                 case LLamaLogLevel.Continue: goto default;
                 case LLamaLogLevel.None: goto default;
+                default: AppLogger.Info(formatted); break;
+            }
+        }
+        public static void LogNativeWhisper(WhisperLogLevel level, string msg)
+        {
+            string formatted = $"[WhisperNative] {msg}";
+            switch (level)
+            {
+                case WhisperLogLevel.Debug: goto default;
+                case WhisperLogLevel.Warning: AppLogger.Warning(formatted); break;
+                case WhisperLogLevel.Error: AppLogger.Error(formatted); break;
+                case WhisperLogLevel.Info: goto default;
+                case WhisperLogLevel.None: goto default;
                 default: AppLogger.Info(formatted); break;
             }
         }

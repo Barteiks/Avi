@@ -1,6 +1,8 @@
 ﻿using Avi.Services;
 using Avi.Services.AI;
+using LLama.Common;
 using LLama.Native;
+using System.Diagnostics;
 
 namespace Avi.Managers
 {
@@ -9,13 +11,19 @@ namespace Avi.Managers
         private LlamaSessionService? _session;
 
         public event Action<string>? OnTokenGenerated;
+        private ISettingsService _settings;
 
         public LlamaManager(ISpeechManager speechManager, ISettingsService settings)
         {
+            _settings = settings;
+
             NativeLibraryConfig.All.WithLogCallback((level, msg) =>
             {
-                AppLogger.LogNative(level, msg);
+                AppLogger.LogNativeLlama(level, msg);
             });
+            
+            
+           
             var speechServer = speechManager.GetServer();
             _session = new LlamaSessionService(speechServer!, settings);
             _session.OnTokenGenerated += token =>
@@ -24,14 +32,25 @@ namespace Avi.Managers
             };
         }
         
-        public async Task SendMessage(String message)
+        public async Task SendMessage(String message, AuthorRole authorRole )
         {
-            await _session!.SendMessageAsync(message);
+            Debug.WriteLine("6767676767");
+            await _session!.SendMessageAsync(message, authorRole);
         }
         public async Task LoadModel()
         {
+            if (_settings.LlamaCUDA)
+            {
+                AppLogger.Info("Starting LLama for CUDA");
+                NativeLibraryConfig.All.WithCuda(_settings.LlamaCUDA).WithAutoFallback(!_settings.LlamaCUDA).SkipCheck(_settings.LlamaCUDA);
+            }
+            else
+            {
+                if (_settings.LlamaVulkan) AppLogger.Info("Starting LLama for Vulkan");
+                NativeLibraryConfig.All.WithVulkan(_settings.LlamaVulkan);
+            }
             if (_session != null)
-                await _session.Load(); // await the load so callers get accurate completion
+                await _session.Load();
         }
 
         public Task LoadHistory() => _session!.LoadHistory();

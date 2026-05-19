@@ -10,19 +10,21 @@ namespace Avi.Services
         string WhisperPath { get; set; }
         string LlamaPath { get; set; }
 
-        // LLama settings
+        // LLama _settings
         int LlamaGpuLayers { get; set; }
         int LlamaContextSize { get; set; }
         int LlamaThreads { get; set; }
         float LlamaTemperature { get; set; }
         bool LlamaCUDA { get; set; }
+        bool LlamaVulkan { get; set; }
 
-        // Whisper settings
+        // Whisper _settings
         int WhisperContextSize { get; set; }
         int WhisperThreads { get; set; }
         bool WhisperCUDA { get; set; }
+        bool WhisperVulkan { get; set; }
 
-        // App settings
+        // App _settings
         string AppLanguage { get; set; }
         bool IsFirstLaunch { get; set; }
 
@@ -35,23 +37,25 @@ namespace Avi.Services
 
         private static class Keys
         {
-            // App settings
+            // App _settings
             public const string AppLanguage = "app_language";
             public const string FirstLaunch = "first_launch";
 
-            // Whisper settings
+            // Whisper _settings
             public const string WhisperModelPath = "whisper_file";
             public const string WhisperThreads = "whisper_threads";
             public const string WhisperContextSize = "whisper_context_size";
             public const string WhisperCUDA = "whisper_cuda";
+            public const string WhisperVulkan = "whisper_vulkan";
 
-            // Llama settings
+            // Llama _settings
             public const string LlamaModelPath = "llama_file";
             public const string LlamaThreads = "llama_threads";
             public const string LlamaGpuLayers = "llama_gpu_layers";
             public const string LlamaContextSize = "llama_context_size";
             public const string LlamaTemperature = "llama_temperature";
             public const string LlamaCUDA = "llama_cuda";
+            public const string LlamaVulkan = "llama_vulkan";
         }
 
         public SettingsService(IPlatformPathService platformPathService)
@@ -126,6 +130,11 @@ namespace Avi.Services
             get => Preferences.Get(Keys.LlamaCUDA, true);
             set => Preferences.Set(Keys.LlamaCUDA, value);
         }
+        public bool LlamaVulkan
+        {
+            get => Preferences.Get(Keys.LlamaVulkan, true);
+            set => Preferences.Set(Keys.LlamaVulkan, value);
+        }
 
         // -------------------------
         // WHISPER SETTINGS
@@ -147,6 +156,11 @@ namespace Avi.Services
         {
             get => Preferences.Get(Keys.WhisperCUDA, true);
             set => Preferences.Set(Keys.WhisperCUDA, value);
+        }
+        public bool WhisperVulkan
+        {
+            get => Preferences.Get(Keys.WhisperVulkan, true);
+            set => Preferences.Set(Keys.WhisperVulkan, value);
         }
 
         // -------------------------

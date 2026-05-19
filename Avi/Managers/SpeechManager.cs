@@ -4,6 +4,7 @@ using Avi.Services.Whisper;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Whisper.net.Logger;
 
 namespace Avi.Managers
 {
@@ -16,6 +17,11 @@ namespace Avi.Managers
 
         public SpeechManager(ISettingsService settings)
         {
+            LogProvider.AddLogger((level, message) =>
+            {
+                if (message == null) return;
+                AppLogger.LogNativeWhisper(level, message);
+            });
             // create whisper transcription service
             _whisper = new WhisperTranscriptionService(settings);
 

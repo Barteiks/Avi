@@ -71,6 +71,18 @@ public partial class SettingsView : ContentView
             }
         }
     }
+    public bool WhisperVulkan
+    {
+        get => _settings.WhisperVulkan;
+        set
+        {
+            if (_settings.WhisperVulkan != value)
+            {
+                _settings.WhisperVulkan = value; // ZAPIS DO SERWISU
+                OnPropertyChanged();
+            }
+        }
+    }
 
     // ==========================================
     // LLAMA SETTINGS
@@ -118,6 +130,18 @@ public partial class SettingsView : ContentView
             if (_settings.LlamaCUDA != value)
             {
                 _settings.LlamaCUDA = value; // ZAPIS DO SERWISU
+                OnPropertyChanged();
+            }
+        }
+    }
+    public bool LlamaVulkan
+    {
+        get => _settings.LlamaVulkan;
+        set
+        {
+            if (_settings.LlamaVulkan != value)
+            {
+                _settings.LlamaVulkan = value; // ZAPIS DO SERWISU
                 OnPropertyChanged();
             }
         }
