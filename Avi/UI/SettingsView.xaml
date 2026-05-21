@@ -27,6 +27,12 @@
                 </Picker>
             </controls:SettingsItem>
 
+            <Label Text="Avi permissions" FontSize="14" FontAttributes="Bold" TextColor="#E0E0E0" Margin="5,10,0,5"/>
+            <controls:SettingsItem Icon="&#xE756;" Title="Allow CMD" Description="Allow Avi to use CMD">
+                <Switch Grid.Column="3" IsToggled="{Binding AviCMD}" VerticalOptions="Center" HorizontalOptions="End" Margin="0,0,40,0" OnColor="#0078D4"/>
+            </controls:SettingsItem>
+            <!--WHISPER-->
+            <Label Text="Whisper settings" FontSize="14" FontAttributes="Bold" TextColor="#E0E0E0" Margin="5,10,0,5"/>
             <controls:SettingsItem Icon="&#xF2B7;" Title="Avi language" Description="Select language for Avi">
                 <Picker WidthRequest="150" TextColor="White" TitleColor="White" BackgroundColor="#323232" SelectedIndex="1">
                     <Picker.ItemsSource>
@@ -37,34 +43,9 @@
                     </Picker.ItemsSource>
                 </Picker>
             </controls:SettingsItem>
-            <Label Text="Avi permissions" FontSize="14" FontAttributes="Bold" TextColor="#E0E0E0" Margin="5,10,0,5"/>
-            <controls:SettingsItem Icon="&#xE756;" Title="Allow CMD" Description="Allow Avi to use CMD">
-                <Switch Grid.Column="3" IsToggled="{Binding AviCMD}" VerticalOptions="Center" HorizontalOptions="End" Margin="0,0,40,0" OnColor="#0078D4"/>
-            </controls:SettingsItem>
-
-            <Label Text="Whisper settings" FontSize="14" FontAttributes="Bold" TextColor="#E0E0E0" Margin="5,10,0,5"/>
-
             <controls:SettingsItem Icon="&#xE8B7;" Title="Whisper model" Description="Select model for whisper">
-                <Picker WidthRequest="150" TextColor="White" TitleColor="White" BackgroundColor="#323232" SelectedIndex="1">
-                    <Picker.ItemsSource>
-                        <x:Array Type="{x:Type x:String}">
-                            <x:String>English</x:String>
-                            <x:String>Polish</x:String>
-                        </x:Array>
-                    </Picker.ItemsSource>
+                <Picker x:Name="WhisperModelPicker" WidthRequest="150" TextColor="White" TitleColor="White" BackgroundColor="#323232" SelectedIndex="1" IsEnabled="False" ItemsSource="{Binding WhisperModels}" SelectedItem="{Binding SelectedModelWhisper}">
                 </Picker>
-            </controls:SettingsItem>
-
-            <controls:SettingsItem Icon="&#xEEA0;" Title="Whisper context size" Description="Select context size for whisper">
-                <Grid ColumnDefinitions="45, *" VerticalOptions="Center" WidthRequest="{OnPlatform WinUI=250, Android=180}">
-                    <Label Grid.Column="0" 
-                           Text="{Binding WhisperContextSizeDisplay}" 
-                           TextColor="White" 
-                           FontSize="{OnPlatform WinUI=14, Android=12}"
-                           VerticalOptions="Center" 
-                           HorizontalTextAlignment="Center" />
-                    <Slider Grid.Column="1" Minimum="0" Maximum="4" VerticalOptions="Center" Value="{Binding WhisperContextIndex}" />
-                </Grid>
             </controls:SettingsItem>
 
             <controls:SettingsItem Icon="&#xEEA1;" Title="Whisper threads amount" Description="Select threads amount for whisper">
@@ -78,6 +59,17 @@
                     <Slider Grid.Column="1" Minimum="1" Maximum="{Binding MaxThreads}" VerticalOptions="Center" Value="{Binding WhisperThreads}" />
                 </Grid>
             </controls:SettingsItem>
+            <controls:SettingsItem Icon="&#xE9CA;" Title="Whisper temperature" Description="Set temperature for whisper">
+                <Grid ColumnDefinitions="45, *" VerticalOptions="Center" WidthRequest="{OnPlatform WinUI=250, Android=180}">
+                    <Label Grid.Column="0" 
+                Text="{Binding WhisperTemperatureDisplay}" 
+                TextColor="White" 
+                FontSize="{OnPlatform WinUI=14, Android=12}"
+                VerticalOptions="Center" 
+                HorizontalTextAlignment="Center" />
+                    <Slider Grid.Column="1" Minimum="0" Maximum="10" VerticalOptions="Center" Value="{Binding WhisperTemperatureIndex}" />
+                </Grid>
+            </controls:SettingsItem>
 
             <controls:SettingsItem Icon="&#xE950;" Title="Use cuda" Description="Select if cuda should be used">
                 <Switch Grid.Column="3" IsToggled="{Binding WhisperCUDA}" VerticalOptions="Center" HorizontalOptions="End" Margin="0,0,40,0" OnColor="#0078D4"/>
@@ -86,10 +78,9 @@
             <controls:SettingsItem Icon="&#xECAD;" Title="Use vulkan" Description="Select if vulkan should be used">
                 <Switch Grid.Column="3" IsToggled="{Binding WhisperVulkan}" VerticalOptions="Center" HorizontalOptions="End" Margin="0,0,40,0" OnColor="#0078D4"/>
             </controls:SettingsItem>
-
+            <!--LLAMA-->
             <Label Text="Llama settings" FontSize="14" FontAttributes="Bold" TextColor="#E0E0E0" Margin="5,10,0,5"/>
-
-            <controls:SettingsItem Icon="&#xE8B7;" Title="Llama model" Description="Select model for llama">
+            <controls:SettingsItem Icon="&#xF2B7;" Title="Avi language" Description="Select language for Avi">
                 <Picker WidthRequest="150" TextColor="White" TitleColor="White" BackgroundColor="#323232" SelectedIndex="1">
                     <Picker.ItemsSource>
                         <x:Array Type="{x:Type x:String}">
@@ -97,6 +88,10 @@
                             <x:String>Polish</x:String>
                         </x:Array>
                     </Picker.ItemsSource>
+                </Picker>
+            </controls:SettingsItem>
+            <controls:SettingsItem Icon="&#xE8B7;" Title="Llama model" Description="Select model for llama">
+                <Picker x:Name="LlamaModelPicker" WidthRequest="150" TextColor="White" TitleColor="White" BackgroundColor="#323232" SelectedIndex="1" IsEnabled="False" ItemsSource="{Binding LlamaModels}" SelectedItem="{Binding SelectedModelLlama}">
                 </Picker>
             </controls:SettingsItem>
 
@@ -108,7 +103,7 @@
                            FontSize="{OnPlatform WinUI=14, Android=12}"
                            VerticalOptions="Center" 
                            HorizontalTextAlignment="Center" />
-                    <Slider Grid.Column="1" Minimum="0" Maximum="4" VerticalOptions="Center" Value="{Binding LlamaContextIndex}" />
+                    <Slider Grid.Column="1" Minimum="0" Maximum="9" VerticalOptions="Center" Value="{Binding LlamaContextIndex}" />
                 </Grid>
             </controls:SettingsItem>
 
@@ -121,6 +116,39 @@
                            VerticalOptions="Center" 
                            HorizontalTextAlignment="Center" />
                     <Slider Grid.Column="1" Minimum="1" Maximum="{Binding MaxThreads}" VerticalOptions="Center" Value="{Binding LlamaThreads}" />
+                </Grid>
+            </controls:SettingsItem>
+            <controls:SettingsItem Icon="&#xE81E;" Title="Llama GPU layers" Description="Set Gpu Layers for Llama">
+                <Grid ColumnDefinitions="45, *" VerticalOptions="Center" WidthRequest="{OnPlatform WinUI=250, Android=180}">
+                    <Label Grid.Column="0" 
+Text="{Binding LlamaGpuLayersDisplay}" 
+TextColor="White" 
+FontSize="{OnPlatform WinUI=14, Android=12}"
+VerticalOptions="Center" 
+HorizontalTextAlignment="Center" />
+                    <Slider Grid.Column="1" Minimum="0" Maximum="12" VerticalOptions="Center" Value="{Binding LlamaGpuLayersIndex}" />
+                </Grid>
+            </controls:SettingsItem>
+            <controls:SettingsItem Icon="&#xF158;" Title="Llama BatchSize" Description="Set temperature for whisper">
+                <Grid ColumnDefinitions="45, *" VerticalOptions="Center" WidthRequest="{OnPlatform WinUI=250, Android=180}">
+                    <Label Grid.Column="0" 
+Text="{Binding LlamaBatchSizeDisplay}" 
+TextColor="White" 
+FontSize="{OnPlatform WinUI=14, Android=12}"
+VerticalOptions="Center" 
+HorizontalTextAlignment="Center" />
+                    <Slider Grid.Column="1" Minimum="0" Maximum="4" VerticalOptions="Center" Value="{Binding LlamaBatchSizeIndex}" />
+                </Grid>
+            </controls:SettingsItem>
+            <controls:SettingsItem Icon="&#xE9CA;" Title="Llama temperature" Description="Set temperature for whisper">
+                <Grid ColumnDefinitions="45, *" VerticalOptions="Center" WidthRequest="{OnPlatform WinUI=250, Android=180}">
+                    <Label Grid.Column="0" 
+    Text="{Binding LlamaTemperatureDisplay}" 
+    TextColor="White" 
+    FontSize="{OnPlatform WinUI=14, Android=12}"
+    VerticalOptions="Center" 
+    HorizontalTextAlignment="Center" />
+                    <Slider Grid.Column="1" Minimum="0" Maximum="10"  VerticalOptions="Center" Value="{Binding LlamaTemperatureIndex}" />
                 </Grid>
             </controls:SettingsItem>
 

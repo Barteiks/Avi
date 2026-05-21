@@ -50,9 +50,8 @@ namespace Avi.Services.Whisper
                 .WithSingleSegment()
                 .WithLanguage("auto")
                 .WithPrompt("User is speaking real time sentences. Prefer clear words. If unclear, assume simple phrases.")
-                
                 .WithTemperature(0.0f);
-
+                
             ((BeamSearchSamplingStrategyBuilder)build.WithBeamSearchSamplingStrategy())
                 .WithPatience(1.0f)
                 .WithBeamSize(3);

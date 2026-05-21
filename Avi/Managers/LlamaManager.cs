@@ -1,13 +1,16 @@
 ﻿using Avi.Services;
 using Avi.Services.AI;
+using Avi.Services.Llama;
 using LLama.Common;
 using LLama.Native;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Avi.Managers
 {
     public class LlamaManager : IDisposable
     {
+        
         private LlamaSessionService? _session;
 
         public event Action<string>? OnTokenGenerated;
@@ -42,8 +45,8 @@ namespace Avi.Managers
             if (_settings.LlamaCUDA)
             {
                 AppLogger.Info("Starting LLama for CUDA");
-                NativeLibraryConfig.All.WithCuda(_settings.LlamaCUDA).WithAutoFallback(!_settings.LlamaCUDA).SkipCheck(_settings.LlamaCUDA);
-            }
+                NativeLibraryConfig.All.WithSelectingPolicy(new ForceCuda12Policy()).WithCuda(_settings.LlamaCUDA).WithAutoFallback(!_settings.LlamaCUDA).SkipCheck(_settings.LlamaCUDA);
+            } 
             else
             {
                 if (_settings.LlamaVulkan) AppLogger.Info("Starting LLama for Vulkan");

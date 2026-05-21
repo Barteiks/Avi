@@ -11,21 +11,26 @@ namespace Avi.Services
         string LlamaPath { get; set; }
 
         // LLama _settings
+        string LlamaModel { get; set; }
+        string LlamaLanguage { get; set; }
         int LlamaGpuLayers { get; set; }
         int LlamaContextSize { get; set; }
+        int LlamaMaxTokens { get; set; }
         int LlamaThreads { get; set; }
+        int LlamaBatchSize { get; set; }
         float LlamaTemperature { get; set; }
         bool LlamaCUDA { get; set; }
         bool LlamaVulkan { get; set; }
 
         // Whisper _settings
-        int WhisperContextSize { get; set; }
+        string WhisperModel { get; set; }
+        string WhisperLanguage { get; set; }
         int WhisperThreads { get; set; }
+        float WhisperTemperature { get; set; }
         bool WhisperCUDA { get; set; }
         bool WhisperVulkan { get; set; }
 
         // App _settings
-        string AppLanguage { get; set; }
         bool IsFirstLaunch { get; set; }
 
         void ClearAll();
@@ -38,22 +43,27 @@ namespace Avi.Services
         private static class Keys
         {
             // App _settings
-            public const string AppLanguage = "app_language";
             public const string FirstLaunch = "first_launch";
 
             // Whisper _settings
+            public const string WhisperModel = "whisper_model";
+            public const string WhisperLanguage = "whisper_language";
             public const string WhisperModelPath = "whisper_file";
             public const string WhisperThreads = "whisper_threads";
-            public const string WhisperContextSize = "whisper_context_size";
+            public const string WhisperTemperature = "whisper_temperature";
             public const string WhisperCUDA = "whisper_cuda";
             public const string WhisperVulkan = "whisper_vulkan";
 
             // Llama _settings
+            public const string LlamaModel = "llama_model";
+            public const string LlamaLanguage = "llama_language";
             public const string LlamaModelPath = "llama_file";
             public const string LlamaThreads = "llama_threads";
             public const string LlamaGpuLayers = "llama_gpu_layers";
             public const string LlamaContextSize = "llama_context_size";
+            public const string LlamaMaxTokens = "llama_max_tokens";
             public const string LlamaTemperature = "llama_temperature";
+            public const string LlamaBatchSize = "llama_batch_size";
             public const string LlamaCUDA = "llama_cuda";
             public const string LlamaVulkan = "llama_vulkan";
         }
@@ -66,13 +76,18 @@ namespace Avi.Services
         // -------------------------
         // MODEL PATHS
         // -------------------------
+        public string WhisperModel
+        {
+            get => Preferences.Get(Keys.WhisperModel, "");
+            set => Preferences.Set(Keys.WhisperModel, value);
+        }
 
         public string WhisperPath
         {
             get
             {
                 var folder = _platformPathService.GetModelDirectory();
-                var fileName = Preferences.Get(Keys.WhisperModelPath, "ggml-tiny-q5_1.bin"); //ggml-medium-q5_0.bin
+                var fileName = WhisperModel;
                 return Path.Combine(folder, fileName);
             }
             set
@@ -81,13 +96,18 @@ namespace Avi.Services
                 Preferences.Set(Keys.WhisperModelPath, fileName);
             }
         }
+        public string LlamaModel
+        {
+            get => Preferences.Get(Keys.LlamaModel, "");
+            set => Preferences.Set(Keys.LlamaModel, value);
+        }
 
         public string LlamaPath
         {
             get
             {
                 var folder = _platformPathService.GetModelDirectory();
-                var fileName = Preferences.Get(Keys.LlamaModelPath, "xd.gguf"); //Meta-Llama-3.1-8B-Instruct-Q5_K_M
+                var fileName = LlamaModel;
                 return Path.Combine(folder, fileName);
             }
             set
@@ -100,16 +120,20 @@ namespace Avi.Services
         // -------------------------
         // LLAMA SETTINGS
         // -------------------------
-
+        public string LlamaLanguage
+        {
+            get => Preferences.Get(Keys.LlamaLanguage, "en");
+            set => Preferences.Set(Keys.LlamaLanguage, value);
+        }
         public int LlamaGpuLayers
         {
-            get => Preferences.Get(Keys.LlamaGpuLayers, 200);
+            get => Preferences.Get(Keys.LlamaGpuLayers, -1);
             set => Preferences.Set(Keys.LlamaGpuLayers, value);
         }
 
         public int LlamaContextSize
         {
-            get => Preferences.Get(Keys.LlamaContextSize, 1024); // default 4 GB
+            get => Preferences.Get(Keys.LlamaContextSize, 4096); // default 4 GB
             set => Preferences.Set(Keys.LlamaContextSize, value);
         }
 
@@ -119,10 +143,22 @@ namespace Avi.Services
             set => Preferences.Set(Keys.LlamaThreads, value);
         }
 
+        public int LlamaMaxTokens
+        {
+            get => Preferences.Get(Keys.LlamaMaxTokens, 500);
+            set => Preferences.Set(Keys.LlamaMaxTokens, value);
+        }
+
         public float LlamaTemperature
         {
             get => Preferences.Get(Keys.LlamaTemperature, 0.7f);
             set => Preferences.Set(Keys.LlamaTemperature, value);
+        }
+        
+        public int LlamaBatchSize
+        {
+            get => Preferences.Get(Keys.LlamaBatchSize, 64);
+            set => Preferences.Set(Keys.LlamaBatchSize, value);
         }
 
         public bool LlamaCUDA
@@ -139,17 +175,21 @@ namespace Avi.Services
         // -------------------------
         // WHISPER SETTINGS
         // -------------------------
-
-        public int WhisperContextSize
+        public string WhisperLanguage
         {
-            get => Preferences.Get(Keys.WhisperContextSize, 512);
-            set => Preferences.Set(Keys.WhisperContextSize, value);
+            get => Preferences.Get(Keys.WhisperLanguage, "en");
+            set => Preferences.Set(Keys.WhisperLanguage, value);
         }
 
         public int WhisperThreads
         {
-            get => Preferences.Get(Keys.WhisperThreads, Environment.ProcessorCount);
+            get => Preferences.Get(Keys.WhisperThreads, Environment.ProcessorCount - 1);
             set => Preferences.Set(Keys.WhisperThreads, value);
+        }
+        public float WhisperTemperature
+        {
+            get => Preferences.Get(Keys.WhisperTemperature, 0.0f);
+            set => Preferences.Set(Keys.WhisperTemperature, value);
         }
 
         public bool WhisperCUDA
@@ -167,11 +207,6 @@ namespace Avi.Services
         // APP SETTINGS
         // -------------------------
 
-        public string AppLanguage
-        {
-            get => Preferences.Get(Keys.AppLanguage, "en");
-            set => Preferences.Set(Keys.AppLanguage, value);
-        }
 
         public bool IsFirstLaunch
         {

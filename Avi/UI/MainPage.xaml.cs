@@ -15,8 +15,9 @@ namespace Avi
         private readonly Face? _faceDrawable;
         private readonly FaceFadeAnimator _fadeAnimator;
         private readonly ISettingsService _settings;
+        private readonly SettingsView _settingsView;
 
-        public MainPage(TaskManager taskManager, ISettingsService settings)
+        public MainPage(TaskManager taskManager, ISettingsService settings, SettingsView settingsView)
         {
             //ONLY FOR DEBUG
             //private int _emotionIndex = 0;
@@ -30,10 +31,11 @@ namespace Avi
             _faceDrawable.SubText = "";
             _fadeAnimator = new FaceFadeAnimator(FaceView);
             _faceAnimator = new FaceAnimator(FaceView, _fadeAnimator);
+            _settingsView = settingsView;
             SizeChanged += MainPage_SizeChanged;
             LoadLambda();
             sec();
-            SettingsContainer.Children.Add(new SettingsView(_settings));
+            SettingsContainer.Children.Add(settingsView);
         }
         protected override bool OnBackButtonPressed()
         {
@@ -69,6 +71,7 @@ namespace Avi
         {
             if (!isOpen)
             {
+                _settingsView.Refresh();
                 SettingsContainer.IsVisible = true;
                 Overlay.IsVisible = true;
 

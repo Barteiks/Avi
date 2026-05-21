@@ -12,6 +12,7 @@ namespace Avi.Platforms.Android
 {
     public class AndroidPermissionManager : IPlatformPermissionManager
     {
+        private TaskCompletionSource<bool>? _storageTcs;
         public Task<PermissionStatus> CheckAsync<TPermission>()
             where TPermission : Permissions.BasePermission, new()
         {
@@ -51,6 +52,33 @@ namespace Avi.Platforms.Android
             }
 
             return Task.CompletedTask;
+        }
+        public async Task<bool> RequestAndWaitForStoragePermissionAsync()
+        {
+            if (await HasSpecialAsync(SpecialPermission.AllFilesAccess))
+                return true;
+
+            _storageTcs = new TaskCompletionSource<bool>();
+
+            await RequestSpecialAsync(SpecialPermission.AllFilesAccess);
+
+            // Zwracamy wynik działania Taska (true lub false)
+            return await _storageTcs.Task;
+        }
+        public void OnAppResumed()
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                if (_storageTcs != null)
+                {
+                    // Sprawdzamy stan faktyczny
+                    bool isGranted = await HasSpecialAsync(SpecialPermission.AllFilesAccess);
+
+                    // ZAWSZE ustawiamy wynik, przekazując true ALBO false, 
+                    // dzięki czemu aplikacja nigdy się nie zawiesi
+                    _storageTcs.TrySetResult(isGranted);
+                }
+            });
         }
     }
 }

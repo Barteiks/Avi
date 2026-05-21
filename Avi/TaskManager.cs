@@ -10,6 +10,7 @@ public class TaskManager : IDisposable
 {
     private readonly ISettingsService _settings;
     private readonly IPlatformPermissionManager _permissionManager;
+    private readonly IPlatformPathService _platformPathService;
     private LlamaManager? _ai;
     private ISpeechManager? _speech;
     private readonly AiResponseParser _parser = new();
@@ -25,6 +26,7 @@ public class TaskManager : IDisposable
         _settings = settings;
         _permissionManager = permissionManager;
         _parser.OnParsedItem += HandleParsedItem;
+        _platformPathService = platformPathService;
         _speech = speechManager;
         _ai = llamaManager;
         _functions = new FunctionsManager(this);
@@ -49,6 +51,7 @@ public class TaskManager : IDisposable
     public async Task LoadAsync()
     {
         _isLoaded = true;
+        OnStatus?.Invoke("Waiting for permissions...");
         try
         {
             var microphonePermission = await _permissionManager.RequestAsync<Permissions.Microphone>();
@@ -63,13 +66,14 @@ public class TaskManager : IDisposable
          AppLogger.Error($"Error requesting microphone permission: {ex.Message}");
         }
 #if ANDROID
-        await _permissionManager.RequestSpecialAsync(SpecialPermission.AllFilesAccess);
-        if (! await _permissionManager.HasSpecialAsync(SpecialPermission.AllFilesAccess))
-        {
-            OnStatus?.Invoke("No permissions!!!...");
-            _isLoaded = false;
-            return;
-        }
+        var storagePermissionGranted = await _permissionManager.RequestAndWaitForStoragePermissionAsync();
+    if (!storagePermissionGranted)
+    {
+        OnStatus?.Invoke("Storage permission denied. Please grant permissions and restart the app.");
+        _isLoaded = false;
+        return;
+    }
+    _platformPathService.ensureCreated();
 #endif
         OnStatus?.Invoke("Loading models...");
 
@@ -149,4 +153,5 @@ public class TaskManager : IDisposable
         OnDebug?.Invoke(message ?? string.Empty);
     }
     public bool isLoaded => _isLoaded;
+    
 }

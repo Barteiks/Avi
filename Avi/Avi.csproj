@@ -120,7 +120,7 @@
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
 		
-		<Content Include="CudaLibs\Cuda12\*.dll">
+		<Content Include="CudaLibs\Cuda12\*.dll"> 
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<Link>runtimes\win-x64\native\cuda12\%(Filename)%(Extension)</Link>
 		</Content>

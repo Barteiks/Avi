@@ -20,7 +20,6 @@ namespace Avi.Services.AI
         private ISettingsService _settings;
         public DefaultSamplingPipeline SamplingPipeline { get; set; }
         public InferenceParams InferenceParams { get; set; }
-        private const uint MOBILE_CONTEXT_SIZE = 512;
         public LLamaContext Context => _context;
         public LLamaWeights Weights => _model;
         public ModelParams ModelParams => _parameters;

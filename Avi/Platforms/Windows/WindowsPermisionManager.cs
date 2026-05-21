@@ -26,5 +26,12 @@ namespace Avi.Platforms.Windows
             // Windows traktujemy jako "zawsze OK" albo zależnie od twojej logiki
             return Task.FromResult(true);
         }
+        public Task<bool> RequestAndWaitForStoragePermissionAsync()
+        {
+            // Windows nie wymaga specjalnego requestu dla storage, więc zwracamy od razu true
+            return Task.FromResult(true);
+        }
+        public void OnAppResumed() { }
+        
     }
 }

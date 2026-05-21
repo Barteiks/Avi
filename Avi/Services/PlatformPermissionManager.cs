@@ -10,6 +10,8 @@ namespace Avi.Services
         Task<PermissionStatus> RequestAsync<TPermission>() where TPermission : Permissions.BasePermission, new();
         Task RequestSpecialAsync(SpecialPermission permission);
         Task<bool> HasSpecialAsync(SpecialPermission permission);
+        Task<bool> RequestAndWaitForStoragePermissionAsync();
+        void OnAppResumed();
     }
     public enum SpecialPermission
     {

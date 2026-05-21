@@ -8,6 +8,8 @@ namespace Avi.Services
     {
         string GetModelDirectory();
         string GetLogsDirectory();
+
+        void ensureCreated();
     }
     
 }

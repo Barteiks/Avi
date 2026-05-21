@@ -2,9 +2,9 @@
 
 namespace Avi.Platforms.Windows
 {
-    public class PlatformPathServiceWindows : IPlatformPathService   
+    public class PlatformPathServiceWindows : IPlatformPathService
     {
-        private readonly string _mainFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        private readonly string _mainFolder = FileSystem.AppDataDirectory;
         public string GetModelDirectory()
         {
             var path = Path.Combine(_mainFolder, "Avi", "Models");
@@ -17,6 +17,11 @@ namespace Avi.Platforms.Windows
             var path = Path.Combine(_mainFolder, "Avi", "Logs");
             Directory.CreateDirectory(path);
             return path;
+        }
+        public void ensureCreated()
+        {
+            GetModelDirectory();
+            GetLogsDirectory();
         }
     }
 }

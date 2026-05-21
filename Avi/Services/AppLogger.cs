@@ -11,29 +11,36 @@ namespace Avi.Services
     public static class AppLogger
     {
         private static string _logFilePath = null!;
+        private static string _logPath = null!;
         public static ILogger Logger { get; set; }
-
-        public static void Init(IPlatformPathService pathService)
+        public static string _sessionLogFile;
+        public static IPlatformPermissionManager _permissionManager;
+        public static void Init(IPlatformPathService pathService, IPlatformPermissionManager permissionManager)
         {
             // Creating logs directory and log file
             var logsFolder = pathService.GetLogsDirectory();
-            Directory.CreateDirectory(logsFolder);
-
-            _logFilePath = Path.Combine(logsFolder, "app.log");
+            _sessionLogFile = Path.Combine(logsFolder, $"session_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.log");
+            _logPath = logsFolder;
+            _logFilePath = Path.Combine(logsFolder, "latest.log");
+            _permissionManager = permissionManager;
             if (File.Exists(_logFilePath)) File.Delete(_logFilePath);
         }
-        
-        private static void WriteToFile(string level, string msg)
+
+        private static async Task WriteToFile(string level, string msg)
         {
             // Saving logs to file
             if (_logFilePath == null) return;
             var logLine = $"{DateTime.Now:HH:mm:ss} [{level}] {msg}";
-            try
-            {
-                File.AppendAllText(_logFilePath, logLine + Environment.NewLine);
-            }
-            catch (Exception e) {
-                Logger?.LogWarning("Failed to save log: " + e);
+            bool hasPermission = await _permissionManager.HasSpecialAsync(SpecialPermission.AllFilesAccess);
+            if (hasPermission) { 
+                try
+                {
+                    File.AppendAllText(_logFilePath, logLine + Environment.NewLine);
+                    File.AppendAllText(_sessionLogFile, logLine + Environment.NewLine);
+                }
+                catch (Exception e) {
+                    Logger?.LogWarning("Failed to save log: " + e);
+                }
             }
             //Debug.WriteLine(logLine);
         }

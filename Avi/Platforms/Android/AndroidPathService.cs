@@ -26,5 +26,11 @@ namespace Avi.Platforms.Android
             return path;
 
         }
+        public void ensureCreated()
+        {
+            // Ensure that the directories are created at least once
+            GetModelDirectory();
+            GetLogsDirectory();
+        }
     }
 }

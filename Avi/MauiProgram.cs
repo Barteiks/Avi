@@ -1,5 +1,6 @@
 ﻿using Avi.Functions;
 using Avi.Services;
+using Avi.UI;
 using CommunityToolkit.Maui.Core;
 using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
@@ -37,13 +38,14 @@ namespace Avi
             builder.Services.AddSingleton<Managers.ISpeechManager, Managers.SpeechManager>();
             builder.Services.AddSingleton<Managers.LlamaManager>();
             builder.Services.AddSingleton<TaskManager>();
+            builder.Services.AddSingleton<SettingsView>();
             builder.Services.AddSingleton<MainPage>();
-
             builder.Services.AddSingleton<IFileService, FileService>();
             var app = builder.Build();
+            var permissionService = app.Services.GetRequiredService<IPlatformPermissionManager>();
             var pathService = app.Services.GetRequiredService<IPlatformPathService>();
             AppLogger.Logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("AppLogger");
-            AppLogger.Init(pathService);
+            AppLogger.Init(pathService, permissionService);
 
             AppLogger.Info("AppLogger initialized");
             return app;
